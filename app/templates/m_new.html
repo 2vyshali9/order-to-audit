@@ -1,0 +1,7 @@
+{% extends "base.html" %}{% block title %}New order{% endblock %}{% block body %}
+<h1>New order</h1><div id="queue"></div><div id="msg"></div>
+<div class="card"><label class="mute">Customer</label><br><select id="customer" style="width:100%;font-size:1.05rem"></select></div>
+<div id="products"></div>
+<div class="card"><input id="notes" placeholder="Note (optional)" style="width:100%"></div>
+<div class="card row" style="justify-content:space-between;align-items:center"><div><span class="mute">Estimated value (excl. GST)</span><br><b id="total" style="font-size:1.3rem">₹0.00</b></div>
+<button id="submit" type="button" class="ok">Submit order</button></div>{% endblock %}

@@ -1,0 +1,7 @@
+{% extends "base.html" %}{% from "_m.html" import table %}{% block body %}
+<h1>{{ rep.title }}</h1>
+<form method="get" class="row card"><label>From<input type="date" name="from" value="{{ d1 }}"></label><label>To<input type="date" name="to" value="{{ d2 }}"></label>
+{% if key in ('stock_summary', 'stock_ledger') %}<label>Kind<select name="kind"><option value="">all</option>{% for k in ['raw','packaging','finished'] %}<option {{ 'selected' if kind == k }}>{{ k }}</option>{% endfor %}</select></label>{% endif %}
+{% if items %}<label>Item<select name="item"><option value="">all</option>{% for i in items %}<option value="{{ i.id }}" {{ 'selected' if item == i.id }}>{{ i.name }}</option>{% endfor %}</select></label>{% endif %}
+<button>Apply</button><span style="margin-left:auto"><a class="btn sec" href="?{{ qs }}&fmt=csv">CSV</a> <a class="btn sec" href="?{{ qs }}&fmt=xlsx">Excel</a> <a class="btn sec" target="_blank" href="?{{ qs }}&fmt=pdf">PDF</a></span></form>
+{{ table(rep) }}{% if rep.note %}<p class="mute">{{ rep.note }}</p>{% endif %}<p><a href="{{ url_for('reports.index') }}">← All reports</a></p>{% endblock %}

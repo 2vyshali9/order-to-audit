@@ -1,0 +1,12 @@
+{% extends "base.html" %}{% from "_m.html" import table %}{% block body %}
+<h1>Owner dashboard · {{ today }}</h1>
+<div class="grid"><div class="card kpi"><span class="mute">Orders placed today</span><b>{{ status|sum(attribute='n') }}</b>{% for s in status %}<span class="pill">{{ s.status }} {{ s.n }}</span> {% endfor %}</div>
+<div class="card kpi"><span class="mute">Orders awaiting action</span><b>{{ open_orders }}</b></div><div class="card kpi"><span class="mute">Sales this month (excl. GST)</span><b>{{ month_sales|inr }}</b></div>
+<div class="card kpi"><span class="mute">Outstanding dues</span><b>{{ (outstanding.totals[5] if outstanding.totals else 0)|inr }}</b></div></div>
+<h2>Variance alerts (planned vs actual beyond tolerance)</h2>
+{% if alerts %}<div class="wrap"><table><thead><tr><th>Run</th><th>What</th><th class="n">Variance</th></tr></thead><tbody>{% for a in alerts %}<tr class="flagged"><td>{{ a.run_no }}</td><td>{{ a.what }}</td><td class="n flag">{{ '%+.2f' % a.pct if a.pct is not none else 'unplanned' }}%</td></tr>{% endfor %}</tbody></table></div>{% else %}<p class="mute">None.</p>{% endif %}
+<h2>Stock levels</h2><div class="wrap"><table><thead><tr><th>Item</th><th>Kind</th><th class="n">On hand</th><th class="n">Value</th><th></th></tr></thead><tbody>
+{% for i in levels %}<tr><td>{{ i.name }}</td><td>{{ i.kind }}</td><td class="n">{{ i.qty|qty(i) }}</td><td class="n">{{ i.value|inr }}</td><td>{% if i in low %}<span class="flag">LOW</span>{% endif %}</td></tr>{% endfor %}</tbody></table></div>
+<h2>Cost per packet (latest run per product)</h2>{% if cost_rows %}<div class="wrap"><table><thead><tr><th>Product</th><th class="n">Cost / packet</th><th class="n">Selling price</th><th class="n">Margin / packet</th></tr></thead><tbody>
+{% for r in cost_rows %}<tr><td>{{ r[2] }}</td><td class="n">{{ fmt_cell('money', r[7]) }}</td><td class="n">{{ fmt_cell('money', r[8]) }}</td><td class="n">{{ fmt_cell('money', r[9]) }}</td></tr>{% endfor %}</tbody></table></div>{% else %}<p class="mute">No completed runs yet.</p>{% endif %}
+<h2>Receivables by customer</h2>{{ table(outstanding) }}{% endblock %}

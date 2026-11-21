@@ -1,0 +1,8 @@
+{% macro csrf() %}<input type="hidden" name="_csrf" value="{{ csrf_token }}">{% endmacro %}
+{% macro badge(s) %}<span class="badge {{ s }}">{{ s }}</span>{% endmacro %}
+{% macro table(rep) %}
+<div class="wrap"><table><thead><tr>{% for label, kind in rep.columns %}<th class="{{ 'n' if kind in ('money','qty','int','pct') else '' }}">{{ label }}</th>{% endfor %}</tr></thead><tbody>
+{% for row in rep.rows %}<tr class="{{ 'flagged' if 'FLAG' in row else '' }}">{% for (label, kind), v in zip(rep.columns, row) %}<td class="{{ 'n' if kind in ('money','qty','int','pct') else '' }}{{ ' flag' if v == 'FLAG' else '' }}">{{ fmt_cell(kind, v) }}</td>{% endfor %}</tr>
+{% else %}<tr><td colspan="{{ rep.columns|length }}" class="mute">No data in this period.</td></tr>{% endfor %}</tbody>
+{% if rep.totals %}<tfoot><tr>{% for (label, kind), v in zip(rep.columns, rep.totals) %}<td class="{{ 'n' if kind in ('money','qty','int','pct') else '' }}">{{ v if loop.first else fmt_cell(kind, v) }}</td>{% endfor %}</tr></tfoot>{% endif %}</table></div>
+{% endmacro %}

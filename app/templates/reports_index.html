@@ -1,0 +1,5 @@
+{% extends "base.html" %}{% block body %}
+<h1>Reports</h1><form class="row card" method="get" action="#" id="range"><label>From<input type="date" id="from" value="{{ d1 }}"></label><label>To<input type="date" id="to" value="{{ d2 }}"></label><span class="mute">Pick the period, then open a report.</span></form>
+<div class="grid">{% for g, reps in groups.items() %}<div class="card"><b>{{ g }}</b><ul style="padding-left:1.1rem;margin:.4rem 0">{% for key, title in reps %}<li><a class="rl" href="{{ url_for('reports.report', key=key) }}">{{ title }}</a></li>{% endfor %}</ul></div>{% endfor %}</div>
+<script>function upd(){const f=document.getElementById('from').value,t=document.getElementById('to').value;document.querySelectorAll('a.rl').forEach(a=>{const b=a.getAttribute('href').split('?')[0];a.href=b+'?from='+f+'&to='+t});}
+document.getElementById('from').onchange=upd;document.getElementById('to').onchange=upd;upd();</script>{% endblock %}

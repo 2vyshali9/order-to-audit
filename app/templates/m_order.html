@@ -1,0 +1,7 @@
+{% extends "base.html" %}{% from "_m.html" import badge %}{% block body %}
+<h1>{{ order.order_no }} {{ badge(order.status) }}</h1><div class="card"><b>{{ order.cname }}</b><br><span class="mute">{{ order.created_at }}</span>
+{% if order.reject_reason %}<div class="warnbox">Rejected: {{ order.reject_reason }}</div>{% endif %}
+{% if inv %}<p>Invoice {{ inv.invoice_no }} · {{ 'dispatched' if inv.dispatched_at else 'awaiting dispatch' }}</p>{% endif %}</div>
+<div class="wrap"><table><thead><tr><th>Product</th><th class="n">Packets</th><th class="n">Rate</th><th class="n">Amount</th></tr></thead><tbody>
+{% for l in lines %}<tr><td>{{ l.name }}</td><td class="n">{{ l.qty }}</td><td class="n">{{ l.price_paise|inr }}</td><td class="n">{{ (l.qty*l.price_paise)|inr }}</td></tr>{% endfor %}
+</tbody><tfoot><tr><td colspan="3">Total (excl. GST)</td><td class="n">{{ value|inr }}</td></tr></tfoot></table></div><p><a href="{{ url_for('sales.m_home') }}">← My orders</a></p>{% endblock %}

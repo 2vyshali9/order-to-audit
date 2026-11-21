@@ -1,0 +1,5 @@
+{% extends "base.html" %}{% from "_m.html" import badge %}{% block body %}
+<h1>Invoices</h1><div class="wrap"><table><thead><tr><th>Invoice</th><th>Date</th><th>Customer</th><th>Supply</th><th class="n">Total</th><th class="n">Outstanding</th><th>Status</th></tr></thead><tbody>
+{% for v in invoices %}<tr><td><a href="{{ url_for('sales.invoice', iid=v.id) }}">{{ v.invoice_no }}</a></td><td>{{ v.inv_date }}</td><td>{{ v.cname }}</td><td>{{ v.supply_type }}</td><td class="n">{{ v.total_paise|inr }}</td>
+<td class="n">{{ (0 if v.status == 'cancelled' else v.due)|inr }}</td><td>{{ badge(v.status) }} {% if v.status == 'posted' %}<span class="pill">{{ 'dispatched' if v.dispatched_at else 'to dispatch' }}</span>{% endif %}</td></tr>
+{% else %}<tr><td colspan="7" class="mute">No invoices yet.</td></tr>{% endfor %}</tbody></table></div>{% endblock %}

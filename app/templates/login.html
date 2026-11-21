@@ -1,0 +1,7 @@
+{% extends "base.html" %}{% block body %}
+<div class="card" style="max-width:380px;margin:3rem auto"><h1>Sign in</h1>
+<form method="post"><input type="hidden" name="_csrf" value="{{ csrf_token }}">
+<p><input name="username" placeholder="Username" autofocus required style="width:100%"></p>
+<p><input name="password" type="password" placeholder="Password" required style="width:100%"></p>
+<button class="bigbtn">Sign in</button></form>
+<p class="mute">Demo users: salesA, salesB, admin, production, auditor, owner</p></div>{% endblock %}

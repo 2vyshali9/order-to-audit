@@ -1,0 +1,22 @@
+{% extends "base.html" %}{% from "_m.html" import csrf, badge %}{% block body %}
+<h1>{{ order.order_no }} {{ badge(order.status) }}</h1>
+<div class="card"><b>{{ order.cname }}</b> · GSTIN {{ order.gstin or '-' }} · {{ order.state_code|state }}<br><span class="mute">Salesman {{ order.sname }} · {{ order.created_at }}</span>
+{% if order.notes %}<br>Note: {{ order.notes }}{% endif %}{% if order.reject_reason %}<div class="warnbox">Rejected: {{ order.reject_reason }}</div>{% endif %}</div>
+{% set editable = order.status == 'submitted' %}
+<form method="post" action="{{ url_for('sales.admin_order_edit', oid=order.id) }}">{{ csrf() }}
+<div class="wrap"><table><thead><tr><th>Product</th><th class="n">Ordered (packets)</th><th class="n">Price / packet (Rs)</th><th class="n">On hand</th><th class="n">Reserved</th><th class="n">Available</th><th>Stock check</th></tr></thead><tbody>
+{% for l in lines %}{% set c = checks[l.id] %}<tr class="{{ '' if c.ok or order.status not in ['submitted','approved'] else 'flagged' }}"><td>{{ l.name }}</td>
+<td class="n">{% if editable %}<input type="number" min="0" name="qty_{{ l.id }}" value="{{ l.qty }}" style="width:6rem">{% else %}{{ l.qty }}{% endif %}</td>
+<td class="n">{% if editable %}<input name="price{{ l.id }}" value="{{ '%.2f' % (l.price_paise/100) }}" style="width:6rem">{% else %}{{ l.price_paise|inr }}{% endif %}</td>
+<td class="n">{{ c.on_hand }}</td><td class="n">{{ c.reserved }}</td><td class="n">{{ c.available }}</td>
+<td>{% if order.status in ['submitted','approved'] %}{% if c.ok %}<span style="color:var(--ok)">Covered</span>{% else %}<span class="flag">SHORT by {{ c.short }}</span><div class="mute">≈ {{ c.batches_needed }} batch(es) to make</div>{% endif %}{% else %}<span class="mute">-</span>{% endif %}</td></tr>{% endfor %}</tbody></table></div>
+{% if editable %}<p><button class="sec">Save quantity / price edits</button> <span class="mute">Set a quantity to 0 to remove a line. Edits are logged.</span></p>{% endif %}</form>
+<div class="card"><b>Tax if invoiced</b> ({{ 'Intra-state: CGST + SGST' if tax.intra else 'Inter-state: IGST' }}, place of supply {{ tax.pos|state }})<br>
+Taxable {{ tax.taxable|inr }} · {% if tax.intra %}CGST {{ tax.cgst|inr }} · SGST {{ tax.sgst|inr }}{% else %}IGST {{ tax.igst|inr }}{% endif %} · <b>Total {{ tax.total|inr }}</b></div>
+{% set short = checks.values()|rejectattr('ok')|list %}
+{% if order.status == 'submitted' %}{% if short %}<div class="warnbox"><b>Stock does not cover this order.</b> Edit the quantity down to what is available, produce more, or approve anyway (the order will then wait for stock - dispatch is blocked until it exists).</div>{% endif %}
+<div class="row"><form method="post" action="{{ url_for('sales.admin_order_approve', oid=order.id) }}">{{ csrf() }}{% if short %}<label style="flex-direction:row;align-items:center"><input type="checkbox" name="override" value="1"> approve despite shortage</label>{% endif %}<button class="ok">Approve</button></form>
+<form method="post" action="{{ url_for('sales.admin_order_reject', oid=order.id) }}" class="row">{{ csrf() }}<input name="reason" placeholder="Reason" required><button class="bad">Reject</button></form></div>
+{% elif order.status == 'approved' %}<form method="post" action="{{ url_for('sales.admin_order_invoice', oid=order.id) }}">{{ csrf() }}<button class="ok">Raise GST invoice</button></form>{% endif %}
+{% if invoices %}<h2>Invoices</h2>{% for v in invoices %}<p><a href="{{ url_for('sales.invoice', iid=v.id) }}">{{ v.invoice_no }}</a> {{ badge(v.status) }} {{ v.total_paise|inr }}</p>{% endfor %}{% endif %}
+<p><a href="{{ url_for('sales.admin_orders') }}">← All orders</a></p>{% endblock %}

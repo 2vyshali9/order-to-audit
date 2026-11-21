@@ -1,0 +1,7 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{% block title %}Order-to-Audit{% endblock %}</title><link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}"><meta name="theme-color" content="#1f4e79"></head><body>
+{% if user %}<header><span class="brand">Order-to-Audit</span>{% for label, href in nav %}<a href="{{ href }}">{{ label }}</a>{% endfor %}
+<form method="post" action="{{ url_for('auth.logout') }}"><span>{{ user.full_name }} · {{ user.role }}</span><input type="hidden" name="_csrf" value="{{ csrf_token }}"><button>Log out</button></form></header>{% endif %}
+<main>{% for cat, msg in get_flashed_messages(with_categories=true) %}<div class="flash {{ cat }}">{{ msg }}</div>{% endfor %}{% block body %}{% endblock %}</main>
+{% if user and user.role == 'salesman' %}<script src="{{ url_for('static', filename='order.js') }}"></script>{% endif %}</body></html>

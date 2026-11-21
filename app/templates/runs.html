@@ -1,0 +1,7 @@
+{% extends "base.html" %}{% from "_m.html" import csrf, badge %}{% block body %}
+<h1>Production runs</h1>
+<form method="post" action="{{ url_for('prod.run_start') }}" class="row card">{{ csrf() }}<label>Product<select name="item_id">{% for p in products %}<option value="{{ p.id }}">{{ p.name }}</option>{% endfor %}</select></label>
+<label>Batches<input name="batches" value="1" size="4"></label><label>Date<input type="date" name="date"></label><button>Start run</button></form>
+<div class="wrap"><table><thead><tr><th>Run</th><th>Date</th><th>Product</th><th class="n">Batches</th><th class="n">Expected</th><th class="n">Good output</th><th>Status</th></tr></thead><tbody>
+{% for r in runs %}<tr><td><a href="{{ url_for('prod.run', rid=r.id) }}">{{ r.run_no }}</a></td><td>{{ r.run_date }}</td><td>{{ r.product }}</td><td class="n">{{ r.batches }}</td><td class="n">{{ r.expected_output }}</td><td class="n">{{ r.good_output if r.good_output is not none else '-' }}</td><td>{{ badge(r.status) }}</td></tr>
+{% else %}<tr><td colspan="7" class="mute">No runs yet.</td></tr>{% endfor %}</tbody></table></div>{% endblock %}

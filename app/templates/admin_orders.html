@@ -1,0 +1,5 @@
+{% extends "base.html" %}{% from "_m.html" import badge %}{% block body %}
+<h1>Orders</h1><p>{% for s in ['', 'submitted','approved','invoiced','dispatched','rejected','cancelled'] %}<a class="pill" href="?status={{ s }}">{{ s or 'all' }}</a> {% endfor %}</p>
+<div class="wrap"><table><thead><tr><th>Order</th><th>Customer</th><th>Salesman</th><th class="n">Value (excl. GST)</th><th>Status</th><th>Placed</th></tr></thead><tbody>
+{% for o in orders %}<tr><td><a href="{{ url_for('sales.admin_order', oid=o.id) }}">{{ o.order_no }}</a></td><td>{{ o.cname }}</td><td>{{ o.sname }}</td><td class="n">{{ o.value|inr }}</td><td>{{ badge(o.status) }}</td><td>{{ o.created_at[:16] }}</td></tr>
+{% else %}<tr><td colspan="6" class="mute">No orders.</td></tr>{% endfor %}</tbody></table></div>{% endblock %}

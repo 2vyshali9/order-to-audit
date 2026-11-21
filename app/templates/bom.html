@@ -1,0 +1,12 @@
+{% extends "base.html" %}{% from "_m.html" import csrf %}{% block body %}
+<h1>BOM · {{ product.name }}</h1>
+<form method="post" action="{{ url_for('prod.bom_save', item_id=product.id) }}" class="card">{{ csrf() }}
+<div class="row"><label>Expected yield per batch (packets)<input name="yield" type="number" min="1" required value="{{ bom.yield_packets if bom else '' }}"></label></div>
+{% if bom %}<div class="wrap" style="margin:.7rem 0"><table><thead><tr><th>Material</th><th class="n">Qty per batch</th><th>Follows output?</th><th></th></tr></thead><tbody>
+{% for l in lines %}<tr><td>{{ l.name }}</td><td class="n">{{ (l.qty_base / l.factor)|dec }} {{ l.disp_unit }}</td><td>{{ 'yes (per packet)' if l.per_packet else 'no' }}</td>
+<td><button class="sec" formaction="{{ url_for('prod.bom_remove', item_id=product.id, line_id=l.id) }}">remove</button></td></tr>{% endfor %}</tbody></table></div>
+<div class="row"><label>Add / change a line<select name="line_item"><option value="">-</option>{% for m in materials %}<option value="{{ m.id }}">{{ m.name }}</option>{% endfor %}</select></label>
+<label>Qty per batch<input name="qty" size="7" inputmode="decimal"></label><label>Unit<select name="unit"><option value="">(item's unit)</option><option>kg</option><option>g</option><option>L</option><option>ml</option><option>piece</option></select></label>
+<label style="flex-direction:row;align-items:center"><input type="checkbox" name="per_packet" value="1"> consumption follows output (pouches)</label></div>{% endif %}
+<p><button>{{ 'Save' if bom else 'Create BOM' }}</button></p></form>
+<p class="mute">Changing a BOM affects new runs only; existing runs keep the plan they started with.</p><p><a href="{{ url_for('prod.items') }}">← Items</a></p>{% endblock %}

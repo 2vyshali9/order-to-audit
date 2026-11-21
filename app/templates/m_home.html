@@ -1,0 +1,7 @@
+{% extends "base.html" %}{% from "_m.html" import badge %}{% block body %}
+<h1>My orders</h1><div id="queue"></div><p><a class="btn bigbtn" style="text-align:center" href="{{ url_for('sales.m_new') }}">+ New order</a></p>
+<div class="wrap"><table><thead><tr><th>Order</th><th>Customer</th><th class="n">Value</th><th>Status</th></tr></thead><tbody>
+{% for o in orders %}<tr><td><a href="{{ url_for('sales.m_order', oid=o.id) }}">{{ o.order_no }}</a><div class="mute">{{ o.created_at[:16] }}</div></td><td>{{ o.cname }}</td><td class="n">{{ o.value|inr }}</td><td>{{ badge(o.status) }}</td></tr>
+{% else %}<tr><td colspan="4" class="mute">No orders yet.</td></tr>{% endfor %}</tbody></table></div>
+<h2>Customer-wise sales (excl. GST)</h2><div class="wrap"><table><thead><tr><th>Customer</th><th class="n">Orders</th><th class="n">Value</th></tr></thead><tbody>
+{% for r in by_customer %}<tr><td>{{ r.name }}</td><td class="n">{{ r.orders }}</td><td class="n">{{ r.value|inr }}</td></tr>{% else %}<tr><td colspan="3" class="mute">Nothing yet.</td></tr>{% endfor %}</tbody></table></div>{% endblock %}
