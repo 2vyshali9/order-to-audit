@@ -28,7 +28,7 @@ def create_app(config=None):
         app.register_blueprint(m.bp)
 
     app.jinja_env.filters.update(inr=inr, qty=lambda base, item: fmt_qty(base, item), dec=fmt_dec, state=state_label)
-    app.jinja_env.globals.update(zip=zip, fmt_cell=fmt_cell)
+    app.jinja_env.globals.update(zip=zip, fmt_cell=fmt_cell, csrf_value=lambda: session.get("csrf", ""))
 
     @app.before_request
     def load_user_and_check_csrf():
