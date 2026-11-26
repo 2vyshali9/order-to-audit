@@ -1,4 +1,6 @@
 # Order-to-Audit: salesman's order to the auditor's monthly report
+## Demo video
+https://youtu.be/7U0dvKM7ZCo
 
 A working prototype for a small South Indian snack manufacturer (Tamil Nadu). Every transaction is entered once, at its source, and flows into stock, production, costing and the auditor's reports. It links the **sales loop** (order → GST invoice → dispatch → receivables) and the **production loop** (purchase → issue per BOM → run → finished goods → variance and cost per packet) at finished-goods stock.
 
