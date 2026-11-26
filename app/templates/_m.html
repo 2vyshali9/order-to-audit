@@ -1,4 +1,4 @@
-{% macro csrf() %}<input type="hidden" name="_csrf" value="{{ csrf_token }}">{% endmacro %}
+{% macro csrf() %}<input type="hidden" name="_csrf" value="{{ csrf_value() }}">{% endmacro %}
 {% macro badge(s) %}<span class="badge {{ s }}">{{ s }}</span>{% endmacro %}
 {% macro table(rep) %}
 <div class="wrap"><table><thead><tr>{% for label, kind in rep.columns %}<th class="{{ 'n' if kind in ('money','qty','int','pct') else '' }}">{{ label }}</th>{% endfor %}</tr></thead><tbody>
